@@ -1,0 +1,1 @@
+GET http://localhost:5000/api/hero/?page=2 HTTP/1.1
