@@ -50,18 +50,20 @@ module.exports.getAllSuperheroes = async (req, res, next) => {
 
 module.exports.updateSuperhero = async (req, res, next) => {
     try {
-        const {params: {heroId}, body: {nickname, realName, catchPhrase, originDescription}, powers} = req;
+        const {params: {heroId}, body: {nickname, realName, catchPhrase, originDescription}, powers, file: {filename}} = req;
         const [rowCount, [updatedHero]] = await Superhero.update({nickname, realName, catchPhrase, originDescription}, {
             where: {
                 id: heroId
             },
             returning: true
         });
+        await updatedHero.createImage({imagePath: filename, superheroId: heroId});
         await powers.map(async pow => {
-            if(!await updatedHero.hasSuperpower(pow))
-            await updatedHero.addSuperpower(pow);
+            if(!await updatedHero.hasSuperpower(pow)){
+                await updatedHero.addSuperpower(pow)
+            };
         });
-        res.status(200).send(updatedHero);
+        res.status(204).send();
     } catch (error) {
         next(error);
     }
