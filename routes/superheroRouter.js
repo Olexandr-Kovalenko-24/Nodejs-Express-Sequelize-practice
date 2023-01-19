@@ -3,6 +3,21 @@ const SuperheroController = require('../controllers/superhero.controller');
 const {getSuperheroInstance} = require('../middlewares/getSuperheroInstance');
 const {pagination} = require('../middlewares/pagination');
 const {addSuperpower} = require('../middlewares/addSuperpower');
+const multer = require('multer');
+const path = require('path');
+
+const imagePath = path.resolve(__dirname, '../public/images');
+
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, imagePath)
+    },
+    filename: function(req, file, cb) {
+        cb(null, `${Date.now()}.${file.originalname}`)
+    }
+})
+
+const upload = multer({ storage });
 
 const superheroRouter = Router();
 
@@ -12,6 +27,7 @@ superheroRouter.get('/', pagination, SuperheroController.getAllSuperheroes);
 superheroRouter.put('/:heroId', addSuperpower, SuperheroController.updateSuperhero);
 superheroRouter.delete('/:heroId', getSuperheroInstance, SuperheroController.deleteSuperhero);
 
+superheroRouter.patch('/:heroId', upload.single('heroImage'), SuperheroController.addHeroImage);
 
 
 module.exports = superheroRouter;

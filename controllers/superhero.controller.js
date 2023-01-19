@@ -76,3 +76,18 @@ module.exports.deleteSuperhero = async (req, res, next) => {
         next(error);
     }
 }
+
+module.exports.addHeroImage = async (req, res, next) => {
+    try {
+        const {params: {heroId}, file: {filename}} = req;
+        const result = await Superhero.update({imagePath: filename}, { 
+            returning: true, 
+            where: { 
+                id: heroId 
+            }
+        });
+        res.status(204).send();
+    } catch (error) {
+        next(error)
+    }
+}

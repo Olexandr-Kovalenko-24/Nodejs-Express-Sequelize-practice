@@ -3,6 +3,6 @@ const superheroRouter = require('./superheroRouter');
 
 const rootRouter = Router();
 
-rootRouter.use('/hero', superheroRouter); 
+rootRouter.use('/heroes', superheroRouter); 
 
 module.exports = rootRouter;
