@@ -3,5 +3,5 @@ Content-Type: application/json
 
 {
     "nickname": "Thor Odinson",
-    "superpower": ["endurance"]
+    "superpower": ["fly"]
 }

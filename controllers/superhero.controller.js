@@ -2,8 +2,11 @@ const {Superhero, Superpower, Image} = require('../models');
 
 module.exports.createSuperhero = async (req, res, next) => {
     try {
-        const {body: {nickname, realName, catchPhrase, originDescription}} = req;
+        const {body: {nickname, realName, catchPhrase, originDescription}, powers} = req;
         const createdHero = await Superhero.create({nickname, realName, catchPhrase, originDescription});
+        await powers.map(async pow => {
+            await createdHero.addSuperpower(pow);
+        });
         res.status(201).send(createdHero);
     } catch (error) {
         next(error);
@@ -47,28 +50,17 @@ module.exports.getAllSuperheroes = async (req, res, next) => {
 
 module.exports.updateSuperhero = async (req, res, next) => {
     try {
-        const {params: {heroId}, body: {nickname, realName, catchPhrase, originDescription, superpower}} = req;
+        const {params: {heroId}, body: {nickname, realName, catchPhrase, originDescription}, powers} = req;
         const [rowCount, [updatedHero]] = await Superhero.update({nickname, realName, catchPhrase, originDescription}, {
             where: {
                 id: heroId
             },
             returning: true
         });
-        await superpower.map(async power => {
-            const findedPower = await Superpower.findOne({
-                where: {
-                    superpower: power
-                }
-            });
-            if(findedPower === null){
-                const createdSuperpower = await Superpower.create({superpower: power});
-                const addPowerToHero = await updatedHero.addSuperpower(createdSuperpower);
-            } else {
-                if(!await updatedHero.hasSuperpower(findedPower)) {
-                    await updatedHero.addSuperpower(findedPower);
-                }
-            }
-        })
+        await powers.map(async pow => {
+            if(!await updatedHero.hasSuperpower(pow))
+            await updatedHero.addSuperpower(pow);
+        });
         res.status(200).send(updatedHero);
     } catch (error) {
         next(error);
