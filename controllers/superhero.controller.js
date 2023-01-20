@@ -57,11 +57,13 @@ module.exports.updateSuperhero = async (req, res, next) => {
             },
             returning: true
         });
-        await powers.map(async pow => {
-            if(!await updatedHero.hasSuperpower(pow)){
-                await updatedHero.addSuperpower(pow)
-            };
-        });
+        if(powers){
+            await powers.map(async pow => {
+                if(!await updatedHero.hasSuperpower(pow)){
+                    await updatedHero.addSuperpower(pow)
+                };
+            });
+        }
         if(req.file){
             const {file: {filename}} = req;
             await updatedHero.createImage({imagePath: filename, superheroId: heroId});
