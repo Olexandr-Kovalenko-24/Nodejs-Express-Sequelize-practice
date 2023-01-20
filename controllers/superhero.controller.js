@@ -9,9 +9,11 @@ module.exports.createSuperhero = async (req, res, next) => {
                 await createdHero.addSuperpower(pow);
             });
         }
-        if(req.file){
-            const {file: {filename}} = req;
-            await createdHero.createImage({imagePath: filename, superheroId: createdHero.id});
+        if(req.files.length !== 0){
+            const {files} = req;
+            files.map(async img => {
+                await createdHero.createImage({imagePath: img.filename, superheroId: createdHero.id});
+            })
         }
         res.status(201).send(createdHero);
     } catch (error) {
@@ -70,9 +72,11 @@ module.exports.updateSuperhero = async (req, res, next) => {
                 };
             });
         }
-        if(req.file){
-            const {file: {filename}} = req;
-            await updatedHero.createImage({imagePath: filename, superheroId: heroId});
+        if(req.files.length !== 0){
+            const {files} = req;
+            files.map(async img => {
+                await updatedHero.createImage({imagePath: img.filename, superheroId: heroId});
+            })
         }
         res.status(200).send(updatedHero);
     } catch (error) {
