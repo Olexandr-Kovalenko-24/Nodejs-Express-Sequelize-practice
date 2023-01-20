@@ -21,7 +21,7 @@ const upload = multer({ storage });
 
 const superheroRouter = Router();
 
-superheroRouter.post('/', addSuperpower, SuperheroController.createSuperhero);
+superheroRouter.post('/', upload.single('heroImage'), addSuperpower, SuperheroController.createSuperhero);
 superheroRouter.get('/:heroId', getSuperheroInstance, SuperheroController.getOneSuperhero);
 superheroRouter.get('/', pagination, SuperheroController.getAllSuperheroes);
 superheroRouter.put('/:heroId', upload.single('heroImage'), addSuperpower, SuperheroController.updateSuperhero);

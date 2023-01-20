@@ -9,6 +9,10 @@ module.exports.createSuperhero = async (req, res, next) => {
                 await createdHero.addSuperpower(pow);
             });
         }
+        if(req.file){
+            const {file: {filename}} = req;
+            await createdHero.createImage({imagePath: filename, superheroId: createdHero.id});
+        }
         res.status(201).send(createdHero);
     } catch (error) {
         next(error);

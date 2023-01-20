@@ -5,7 +5,7 @@ module.exports.addSuperpower = async (req, res, next) => {
         const {body: {superpower}} = req;
         const powers = [];
         if(superpower){
-            await superpower.split(',').map(suppow=>suppow.trim()).map(async power => {
+            await superpower.split(',').map(suppow=>suppow.trim().toLowerCase()).map(async power => {
                 const findedPower = await Superpower.findOne({
                     where: {
                         superpower: power
