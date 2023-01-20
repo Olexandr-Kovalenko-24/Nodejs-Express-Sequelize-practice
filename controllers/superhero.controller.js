@@ -4,9 +4,11 @@ module.exports.createSuperhero = async (req, res, next) => {
     try {
         const {body: {nickname, realName, catchPhrase, originDescription}, powers} = req;
         const createdHero = await Superhero.create({nickname, realName, catchPhrase, originDescription});
-        await powers.map(async pow => {
-            await createdHero.addSuperpower(pow);
-        });
+        if(powers){
+            await powers.map(async pow => {
+                await createdHero.addSuperpower(pow);
+            });
+        }
         res.status(201).send(createdHero);
     } catch (error) {
         next(error);
