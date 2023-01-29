@@ -14,11 +14,10 @@ module.exports.addSuperpower = async (req, res, next) => {
                 if(findedPower === null){
                     const createdSuperpower = await Superpower.create({superpower: power});
                     powers.push(createdSuperpower);
-                    req.powers = powers;
                 } else {
                     powers.push(findedPower);
-                    req.powers = powers;
                 }
+                req.powers = powers;
                 next();
             });
         } else {next()};

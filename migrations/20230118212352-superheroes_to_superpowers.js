@@ -14,6 +14,7 @@ module.exports = {
         field: 'superhero_id',
         type:Sequelize.INTEGER,
         allowNull: false,
+        onDelete: 'CASCADE',
         references: {
           model: 'superheroes',
           key: 'id'

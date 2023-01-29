@@ -11,11 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Superhero.hasMany(models.Image, {
-        foreignKey: 'superheroId'
+        foreignKey: 'superheroId',
+        onDelete: 'CASCADE'
       });
       Superhero.belongsToMany(models.Superpower, {
         through: 'superheroes_to_superpowers',
-        foreignKey: 'superheroId'
+        foreignKey: 'superheroId',
+        onDelete: 'CASCADE'
       })
     }
   }
