@@ -6,14 +6,18 @@ module.exports.createSuperhero = async (req, res, next) => {
         const createdHero = await Superhero.create({nickname, realName, catchPhrase, originDescription});
         if(powers){
             await powers.map(async pow => {
-                await createdHero.addSuperpower(pow);
+                if(!await createdHero.hasSuperpower(pow)){
+                    await createdHero.addSuperpower(pow)
+                };
             });
         }
-        if(req.files.length !== 0){
-            const {files} = req;
-            files.map(async img => {
-                await createdHero.createImage({imagePath: img.filename, superheroId: createdHero.id});
-            })
+        if(req.files){
+            if(req.files.length !== 0){
+                const {files} = req;
+                files.map(async img => {
+                    await createdHero.createImage({imagePath: img.filename, superheroId: createdHero.id});
+                })
+            }
         }
         res.status(201).send(createdHero);
     } catch (error) {
@@ -66,17 +70,19 @@ module.exports.updateSuperhero = async (req, res, next) => {
             returning: true
         });
         if(powers){
-            await powers.map(async pow => {
+            powers.map(async pow => {
                 if(!await updatedHero.hasSuperpower(pow)){
                     await updatedHero.addSuperpower(pow)
                 };
             });
         }
-        if(req.files.length !== 0){
-            const {files} = req;
-            files.map(async img => {
-                await updatedHero.createImage({imagePath: img.filename, superheroId: heroId});
-            })
+        if(req.files){
+            if(req.files.length !== 0){
+                const {files} = req;
+                files.map(async img => {
+                    await updatedHero.createImage({imagePath: img.filename, superheroId: heroId});
+                })
+            }
         }
         res.status(200).send(updatedHero);
     } catch (error) {
@@ -93,18 +99,3 @@ module.exports.deleteSuperhero = async (req, res, next) => {
         next(error);
     }
 }
-
-// module.exports.addHeroImage = async (req, res, next) => {
-//     try {
-//         const {params: {heroId}, file: {filename}} = req;
-//         const result = await Superhero.update({imagePath: filename}, { 
-//             returning: true, 
-//             where: { 
-//                 id: heroId 
-//             }
-//         });
-//         res.status(204).send();
-//     } catch (error) {
-//         next(error)
-//     }
-// }
